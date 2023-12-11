@@ -76,7 +76,7 @@ siamese_model.compile(optimizer='RMSprop', loss='binary_crossentropy', metrics=[
 #                                                    compile=False)
 
 # configure path
-# app   = Flask(__name__, static_url_path='/static')
+app   = Flask(__name__, static_url_path='/static')
 # app.config['UPLOAD_FOLDER'] = 'static/images/stored_image'
 # app.config['UPLOADED_FILES'] = 'static/images/input_image'
     
