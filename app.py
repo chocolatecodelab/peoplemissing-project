@@ -97,34 +97,29 @@ def add_people():
             fotos = request.files.getlist('fotos[]')
             nama = request.form.get('nama')
             nama_with_underscore = nama.replace(' ', '_')
-            # pathlib.Path(app.config['UPLOAD_FOLDER'], nama_with_underscore).mkdir(exist_ok=True)
             foto_paths = []  # Inisialisasi array untuk menyimpan path setiap foto
-            url_foto = [] # inisialisasi array untuk menyimpan url setiap foto
-            for foto in fotos:     
+            url_foto = []  # Inisialisasi array untuk menyimpan url setiap foto
+            for foto in fotos:
                 filename = secure_filename(foto.filename)
                 ext = os.path.splitext(filename)[1]
                 new_filename = get_random_string(20)
-                
-                # no save to directory
-                # foto.save(os.path.join(app.config['UPLOAD_FOLDER'], nama_with_underscore, new_filename+ext))
-                # file_path = os.path.join( app.config['UPLOAD_FOLDER'], nama_with_underscore, new_filename+ext)                
-                
-                # but insert to bucket cloud storage
+
                 bucket_name = 'seek-out'
                 bucket = storage_client.bucket(bucket_name)
                 blob = bucket.blob(f'stored_image/{nama_with_underscore}/{new_filename+ext}')
-                # save to bucket
+                
                 # Upload foto langsung dari data yang diterima
                 blob.upload_from_string(
                     foto.read(),  # Membaca data foto dari request
                     content_type=foto.content_type  # Menambahkan tipe konten untuk foto
                 )
+                
                 file_path = f'gs://{bucket_name}/stored_image/{nama_with_underscore}/{new_filename+ext}'
                 foto_paths.append(file_path)
+                
                 file_url_path = f'https://storage.googleapis.com/{bucket_name}/stored_image/{nama_with_underscore}/{new_filename+ext}'
                 url_foto.append(file_url_path)
-                
-                
+
             # retrieve the data from data form
             nama = request.form['nama']
             umur = request.form['umur']
@@ -136,27 +131,39 @@ def add_people():
             kota = request.form['kota']
             gender = request.form['gender']
             isFound = request.form['isFound']
-            
-            # # Buat dokumen baru di koleksi 'people'
-            addMisingPeople = {
-                "foto" : foto_paths,
+
+            # Buat dokumen baru di koleksi 'people'
+            addMissingPeople = {
+                "foto": foto_paths,
                 "url_foto": url_foto,
                 "nama": nama,
-                "umur" : umur,
+                "umur": umur,
                 "tinggi": tinggi,
                 "berat_badan": berat_badan,
-                "ciri_fisik" : ciri_fisik,
+                "ciri_fisik": ciri_fisik,
                 "nomor_dihubungi": nomor_dihubungi,
-                "sering_ditemukan_di" : sering_ditemukan_di,
+                "sering_ditemukan_di": sering_ditemukan_di,
                 'kota': kota,
                 'gender': gender,
-                "isFound": isFound 
+                "isFound": isFound
             }
-            db.collection('MissingPersons').add(addMisingPeople)
             
-            return jsonify({"success": "Person added successfully"}), 200
+            db.collection('MissingPersons').add(addMissingPeople)
+
+
+            response = {
+                "status": "200",
+                "message": "Person added successfully",
+                "data": addMissingPeople
+            }
+
+            return jsonify(response), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        response = {
+            "status": "500",
+            "message": str(e)
+        }
+        return jsonify(response), 500
 
 
 # find people to compare 
@@ -228,7 +235,13 @@ def findpeople():
             if not matched_documents:
                 return jsonify({"error": "Data tidak ditemukan"}), 404  # Atau kode status yang sesuai
             # Return daftar yang berisi data dokumen yang cocok sebagai respons Flask
-            return jsonify(matched_documents)
+            
+            response = {
+                "status": "200",
+                "message": "Searching person successfully",
+                "data": matched_documents
+            }
+            return jsonify(response), 200
             
         
     except Exception as e:
@@ -236,7 +249,7 @@ def findpeople():
 
 
 # Get people by criteria
-@app.route('/getpeople', methods=['GET'])  
+@app.route('/getpeople', methods=['GET'])
 # /getpeople?nama=John   
 # /getpeople?kota=Jakarta
 # /getpeople?gender=Male
@@ -244,7 +257,7 @@ def findpeople():
 def get_people_by_criteria():
     try:
         # Mendapatkan parameter dari URL
-        nama = request.args.get('nama')  
+        nama = request.args.get('nama')
         kota = request.args.get('kota')
         gender = request.args.get('gender')
 
@@ -274,9 +287,19 @@ def get_people_by_criteria():
             person_data = person.to_dict()
             people_list.append(person_data)
 
-        return jsonify(people_list), 200
+        response = {
+            "status": "200",
+            "message": "Data retrieved successfully",
+            "data": people_list
+        }
+
+        return jsonify(response), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        response = {
+            "status": "400",
+            "message": str(e)
+        }
+        return jsonify(response), 400
 
 # edit person based on name
 #PR for edit -> if user edit photo, then replace another photo, previous photo must be deleted
@@ -354,9 +377,19 @@ def edit_people_by_name(person_name):
         # Mendapatkan data yang sudah diupdate
         updated_data = person_ref.get().to_dict()
 
-        return jsonify({'message': f'Person with name {person_name} updated successfully', 'updated_data': updated_data}), 200
+        response = {
+            'status': '200',
+            'message': f'Person with name {person_name} updated successfully',
+            'updated_data': updated_data
+        }
+
+        return jsonify(response), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        response = {
+            'status': '500',
+            'message': str(e)
+        }
+        return jsonify(response), 500
 
 
 # delete person based on name
@@ -380,9 +413,18 @@ def delete_people_by_name(person_name):
             # Hapus dokumen dari Firestore
             doc.reference.delete()
 
-        return jsonify({'message': f'Person dengan nama {person_name} berhasil dihapus'}), 200
+        response = {
+            'status': '200',
+            'message': f'Person dengan nama {person_name} berhasil dihapus'
+        }
+
+        return jsonify(response), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        response = {
+            'status': '500',
+            'message': str(e)
+        }
+        return jsonify(response), 500
 
 
 if __name__ == '__main__':

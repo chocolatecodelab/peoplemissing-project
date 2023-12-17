@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "02936f87-aeda-481c-a2f9-f667b9888626",
+		"name": "LOKANA API test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16404090"
+	},
+	"item": [
+		{
+			"name": "addpeople",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "fotos[]",
+							"type": "file",
+							"src": "/C:/Users/Nazar/Downloads/chrish_hems.jpg"
+						},
+						{
+							"key": "fotos[]",
+							"type": "file",
+							"src": "/C:/Users/Nazar/Downloads/chrish_hem.jpg"
+						},
+						{
+							"key": "nama",
+							"value": "Thor Odinson",
+							"type": "text"
+						},
+						{
+							"key": "umur",
+							"value": "20",
+							"type": "text"
+						},
+						{
+							"key": "tinggi",
+							"value": "170",
+							"type": "text"
+						},
+						{
+							"key": "berat_badan",
+							"value": "60",
+							"type": "text"
+						},
+						{
+							"key": "ciri_fisik",
+							"value": "kekar dan keriting",
+							"type": "text"
+						},
+						{
+							"key": "nomor_dihubungi",
+							"value": "083159236448",
+							"type": "text"
+						},
+						{
+							"key": "sering_ditemukan_di",
+							"value": "area a",
+							"type": "text"
+						},
+						{
+							"key": "kota",
+							"value": "Banjarbaru",
+							"type": "text"
+						},
+						{
+							"key": "gender",
+							"value": "laki-laki",
+							"type": "text"
+						},
+						{
+							"key": "isFound",
+							"value": "false",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/addpeople",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"addpeople"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "read",
+					"originalRequest": {
+						"method": "GET",
+						"header": []
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "editpeople",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "fotos[]",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "fotos[]",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "nama",
+							"value": "{{nama}}",
+							"type": "default"
+						},
+						{
+							"key": "umur",
+							"value": "{{umur}}",
+							"type": "default"
+						},
+						{
+							"key": "tinggi",
+							"value": "{{tinggi}}",
+							"type": "default"
+						},
+						{
+							"key": "berat_badan",
+							"value": "{{berat_badan}}",
+							"type": "default"
+						},
+						{
+							"key": "ciri_fisik",
+							"value": "{{ciri_fisik}}",
+							"type": "default"
+						},
+						{
+							"key": "nomor_dihubungi",
+							"value": "{{nomor_dihubungi}}",
+							"type": "text"
+						},
+						{
+							"key": "sering_ditemukan_di",
+							"value": "{{sering_ditemukan_di}}",
+							"type": "text"
+						},
+						{
+							"key": "kota",
+							"value": "{{kota}}",
+							"type": "text"
+						},
+						{
+							"key": "gender",
+							"value": "{{gender}}",
+							"type": "text"
+						},
+						{
+							"key": "isFound",
+							"value": "{{isFound}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/editpeople",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"editpeople"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deletepeople",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/deletepeople/{{nama}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"deletepeople",
+						"{{nama}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findpeople",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "uploaded_img",
+							"type": "file",
+							"src": "/C:/Users/Nazar/Downloads/chrish_hems.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/findpeople",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"findpeople"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getpeople",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:{{port}}/getpeople?nama={{nama}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"getpeople"
+					],
+					"query": [
+						{
+							"key": "nama",
+							"value": "{{nama}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
